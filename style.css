@@ -3,7 +3,8 @@
 }
 
 body {
-    background-color: rgb(222, 235, 255,1.0);
+    background-color: white;
+    /* background-color: rgb(222, 235, 255,1.0); */
 }
 
 input[type=text], input[type="password"] {
