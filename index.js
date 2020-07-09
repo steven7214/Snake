@@ -65,7 +65,7 @@ function wipe() {
         let score = document.getElementById("score");
         score.textContent = `Score: 0`;
         maxScore.textContent = `Max Score: 0`;
-        updateDB();
+        updateDB(0);
     }
 };
 
@@ -223,11 +223,12 @@ var paused = false;
 var over = false;
 var start = false;
 
-function updateDB() {
-    let user = document.getElementById('user-score').value;
-    if (user != '') {
-        document.getElementById('score-input').value = tailSize-3;
-        document.getElementById('score-form').submit();
+function updateDB(s) {
+    let profile = document.getElementById('profile');
+    if (profile) {
+        let username = profile.textContent.split(" ")
+        username = username[username.length-1]
+        $.post('/update', { username: username, score: s });
     }
 };
 
@@ -241,7 +242,7 @@ function GameOver() {
     body.style.whiteSpace = "pre"
     if (tailSize-3 > points) {
         body.textContent = `HIGH SCORE: ${tailSize-3}!`+ "\r\n"+"\r\n" +"press Enter to play again";
-        updateDB();
+        updateDB(tailSize-3);
     }
     else {
         body.textContent = `GAME OVER! SCORE: ${tailSize-3} \r\n \r\n press Enter to play again`;

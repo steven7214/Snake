@@ -56,14 +56,21 @@ app.get('/', function (req, res) {
 })
 
 app.post('/update', function(req,res) {
-    console.log("cool",req.body);
-    let username = req.body['user-score'];
-    let score = req.body['score-input'];
-    console.log(username, score);
+    let username = req.body.username;
+    let score = req.body.score;
+    console.log("yes",username,score)
     User.updateOne({username:username},{score: score},
         function (err, res) {
             if (err) throw err;
             console.log("score updated");
+        });
+        User.findOne({username: username})
+            .then(user => {
+                if (user) {
+                   console.log(user.score);
+                } else {
+                 console.log("user not found");
+            }
         });
 });
 
@@ -75,6 +82,8 @@ app.post('/login', function (req, res,next) {
             res.redirect('/');
         } else {
             res.render('index', { user: user });
+            req.session.user = user;
+            console.log(req.session.user);
         }
     })(req,res,next);
 });
@@ -87,6 +96,11 @@ app.get('/logout', (req,res) => {
 app.post('/register', function (req, res) {
     let { username, spassword1, spassword2 } = req.body;
     let errors = [];
+
+    // check for spaces
+    if (/\s/.test(username)) {
+        errors.push({ msg: "Username cannot contain spaces" });
+    }
     // check required fields
     if (!username || !spassword1 || !spassword2) {
         errors.push({ msg: "Missing fields"});
