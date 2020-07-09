@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" /><title>Snake</title>
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> -->
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+    <script type="text/javascript"> document.addEventListener('click', function(e) { if(document.activeElement.toString() == '[object HTMLButtonElement]'){ document.activeElement.blur(); } }); </script>
+    <div class="btns">
+        <h2>Snake</h2>
+        <button data-modal-target="#modal" id="instructions" class="button" type="button" style="position: absolute; left: 20px; top: 30px;">Instructions</button>
+        <% if (typeof user == 'undefined' || user=='') { %>
+        <button data-modal-target="#login-modal" id="user" class="button" type="button" style="position: absolute; right: 20px; top: 30px;">Log In / Sign Up</button>
+        <% } else { %>
+        <div id="profile" style="position: absolute; right: 20px; top: 30px;">User: <%= user.username %> </div>
+        <a href="/logout" class="button" style="position: absolute; right: 25px; top: 50px;">Logout</a>
+        <% } %>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="title">Instructions</div>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+            Use the arrow keys to change the direction of the green snake to eat the red apple. As the snake eats more apples, it will grow. Be careful to avoid the walls and tail since snakes cannot eat those things. 
+            Press the space bar to pause/resume and the reset button to reset your high score. Sign Up or Log In to save your score! Happy feasting! :)
+        </div>
+    </div>
+
+    <div class="modal" id="gameover-modal">
+        <div class="modal-body" id="gameover-modal-body" style="text-align: center"></div>
+    </div>
+
+    <div class="modal" id="pause-modal" style="width: 400px; background-color: #000000;opacity: 1.0; text-align: center; font-size: 2rem; font-weight: bold; color: red;">
+        Paused
+        <p style="font-size: 1rem; font-weight: normal; color: #FFFFFF; text-align: center;">press space bar to resume</p>
+    </div>
+    <div class="<%= error != '' ||  success_msg != '' || (typeof login != 'undefined' && login == true) ? 'modal active user' : 'modal user' %>" id="login-modal" style="width: 300px">
+        <div class="modal-header">
+            <div class="title">Log In</div>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body" id="login-modal-body">
+            <%- include('./partials/messages'); %>
+            <form method="POST" action="/login" id="login-form">
+                <label>
+                    Username
+                    <input type="text" class="username" name="username">
+                </label>
+                <label>
+                    Password
+                    <input type="password" id="lpassword" name="lpassword">
+                </label>
+                <br>
+                <div style="text-align:center">
+                    <input type="submit" value="LOG IN" style="text-align:center">
+                </div>
+            </form> 
+        </div>
+        <div class="modal-footer">
+            <button data-modal-target="#signup-modal" class="button" type="button">Don't have an account? Sign up now!</button> 
+        </div>
+    </div>
+    <div class="<%= typeof signup != 'undefined' && signup == true ? 'modal active user' : 'modal user' %>"  id="signup-modal" style="width: 300px">
+        <div class="modal-header">
+            <div class="title">Sign Up</div>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body" id="signup-modal-body">
+            <%- include('./partials/messages'); %>
+            <form method="POST" action="/register" id="signup-form">
+                <label>
+                    Username
+                    <input type="text" class="username" name="username">
+                </label>
+                <label>
+                    Password
+                    <input type="password" id="spassword1" name="spassword1">
+                </label>
+                <label>
+                    Confirm Password
+                    <input type="password" id="spassword2" name="spassword2">
+                </label>
+                <div style="text-align:center">
+                    <input type="submit" value="SIGN UP" style="text-align:center">
+                </div>
+            </form> 
+        </div>
+    </div>
+
+    <div class="<%= error != '' || success_msg != '' || typeof signup != 'undefined' && signup == true || typeof login != 'undefined' && login == true ? 'active' : '' %>" id="overlay"></div>
+
+    <br>
+
+    <div style = "text-align:center;">
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <div>
+            <p id="score">Score: 0</p>
+            <p id=maxScore>High Score: <%= typeof user != 'undefined' && user != '' ? user.score : 0 %></p>
+            <button id="reset" class="button" type="button">Reset</button>
+        </div>
+    </div>
+    <div class="invisible">
+        <form method="POST" action="/update" id='score-form'>
+            <input type="text" id="user-score" name="user-score" value="<%= typeof user != 'undefined' && user != '' ? user.username : ''%>">
+            <input type="number" id='score-input' name='score-input'>
+        </form>
+    </div>
+    <script src="./index.js"></script>
+</html>
