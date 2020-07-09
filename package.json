@@ -25,5 +25,13 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steven7214/Snake.git"
+  },
+  "bugs": {
+    "url": "https://github.com/steven7214/Snake/issues"
+  },
+  "homepage": "https://github.com/steven7214/Snake#readme"
 }
