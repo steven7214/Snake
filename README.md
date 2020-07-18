@@ -1,6 +1,6 @@
 # Snake
 
-This is my introduction project into javascript, node.js, and express app development. It features the classic game of Snake with user authentication that allows players to keep their high scores accross sessions using MongoDB. You can find this app hosted on Heroku at: https://snake-expressapp.herokuapp.com/
+This is my introduction project into javascript, node.js, and express app development. It features the classic game of Snake with user authentication that allows players to keep their high scores accross sessions using MongoDB. You can find this app hosted on Heroku at: https://snake-expressapp.herokuapp.com/ . Heroku puts websites to sleep after 30 minutes of inactivity, so you may have to wait 10 seconds or so before the page renders.
 
 ## How to use?
 
