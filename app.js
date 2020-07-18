@@ -1,4 +1,6 @@
 const express = require('express');
+const wakeUpDyno = require("./wakeDyno");
+const DYNO_URL = "https://snake-expressapp.herokuapp.com/"
 const mongoose = require('mongoose')
 const db = 'mongodb+srv://steven7214:steven7214@cluster0.ybekr.mongodb.net/<dbname>?retryWrites=true&w=majority';
 const path = require('path');
@@ -47,7 +49,10 @@ app.use((req, res, next) => {
 })
 
 var PORT = process.env.PORT || 5000;
-app.listen(PORT, console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+    wakeUpDyno(DYNO_URL);
+});
 
 app.get('/', function (req, res) {
     res.render("index");
