@@ -1,5 +1,4 @@
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose')
 const db = 'mongodb+srv://steven7214:steven7214@cluster0.ybekr.mongodb.net/<dbname>?retryWrites=true&w=majority';
 const path = require('path');
@@ -11,13 +10,12 @@ const session = require('express-session');
 require('./passport')(passport);
 
 // Connect to Mongo
-mongoose.connect(db, { useNewUrlParser: true})
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.log(err));
 
 // User model
 var User = require('./User');
-const { read } = require('fs');
 
 var app = express();
 app.use(express.static(path.resolve(__dirname)));
