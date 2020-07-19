@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 var PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
-    wakeUpDyno(DYNO_URL,interval=40);
+    wakeUpDyno(DYNO_URL);
 });
 
 app.get('/', function (req, res) {
