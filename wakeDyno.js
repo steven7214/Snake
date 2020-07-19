@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-const wakeUpDyno = (url, interval = 0.1, callback) => {
+const wakeUpDyno = (url, interval = 25, callback) => {
     const milliseconds = interval * 60000;
     setTimeout(() => {
 
