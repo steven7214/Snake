@@ -1,7 +1,12 @@
+require("dotenv/config");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const db =
-  "mongodb+srv://steven7214:steven7214@cluster0.ybekr.mongodb.net/<dbname>?retryWrites=true&w=majority";
+  "mongodb+srv://steven7214:" +
+  process.env.DBPASS +
+  "@cluster0.ybekr.mongodb.net/<dbname>?retryWrites=true&w=majority";
+console.log(db);
 const path = require("path");
 const bycrypt = require("bcryptjs");
 const passport = require("passport");
