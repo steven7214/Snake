@@ -6,7 +6,6 @@ const db =
   "mongodb+srv://steven7214:" +
   process.env.DBPASS +
   "@cluster0.ybekr.mongodb.net/<dbname>?retryWrites=true&w=majority";
-console.log(db);
 const path = require("path");
 const bycrypt = require("bcryptjs");
 const passport = require("passport");
