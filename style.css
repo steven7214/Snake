@@ -65,6 +65,7 @@ label {
   .fade {
     transition: opacity 0.15s linear;
   }
+  
   .alert-dismissible {
     padding-right: 4rem;
   }
