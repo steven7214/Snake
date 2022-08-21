@@ -25,19 +25,29 @@ window.onload = function () {
       nopress = false;
     });
   });
+  overlay.addEventListener("click", () => {
+    if (!over) {
+      closeAllModals();
+      nopress = false;
+    }
+  });
   myMusic = new sound("sounds/game_theme.mp3");
   overSound = new sound("sounds/gameover.mov");
   chompSound = new sound("sounds/chomp.mp3");
 };
 
+function closeAllModals() {
+  let modals = document.querySelectorAll(".modal.active");
+  modals.forEach((modalt) => closeModal(modalt));
+  resume();
+}
 function openModal(modal) {
   if (modal == null) {
     console.log("modal not found");
     return;
   }
   // close all open modals before opening modal
-  let modals = document.querySelectorAll(".modal.active");
-  modals.forEach((modalt) => closeModal(modalt));
+  closeAllModals();
   let main = modal.querySelector(".main");
   if (main != null) main.focus();
   modal.classList.add("active");
@@ -154,10 +164,10 @@ function draw() {
   ctx.fillStyle = "green";
   for (let i = 0; i < snakeTrail.length; i++) {
     ctx.fillRect(
-      snakeTrail[i].x * tileSize,
-      snakeTrail[i].y * tileSize,
-      tileSize,
-      tileSize
+      snakeTrail[i].x * gridSize,
+      snakeTrail[i].y * gridSize,
+      gridSize,
+      gridSize
     );
     // bites tail
     if (
@@ -194,7 +204,7 @@ function draw() {
 
   // paint apple
   ctx.fillStyle = "red";
-  ctx.fillRect(appleX * tileSize, appleY * tileSize, tileSize, tileSize);
+  ctx.fillRect(appleX * gridSize, appleY * gridSize, gridSize, gridSize);
   let score = document.getElementById("score");
   score.textContent = `Score: ${tailSize - 3}`;
 }
@@ -209,8 +219,9 @@ let value = document.getElementById("maxScore").textContent.split(" ");
 var points = Number.parseInt(value[value.length - 1]);
 
 // game
-var gridSize = (tileSize = 20); // 20 x 20 = 400 canvas size
-var nextX = (nextY = 0);
+var gridSize = 20; // 20 x 20 = 400 canvas size
+var nextX = 0;
+var nextY = 0;
 var appleX = 15;
 var appleY = 10;
 
@@ -271,18 +282,18 @@ function reset() {
 }
 
 function pause() {
-  console.log(paused);
-  clearInterval(drawInterval);
-  let modal = document.getElementById("pause-modal");
-  openModal(modal);
-  paused = true;
-  myMusic.stop();
-  playing = false;
-  overlay.classList.add("active");
+  if (start) {
+    clearInterval(drawInterval);
+    let modal = document.getElementById("pause-modal");
+    openModal(modal);
+    paused = true;
+    myMusic.stop();
+    playing = false;
+    overlay.classList.add("active");
+  }
 }
 
 function resume() {
-  console.log(start, paused);
   if (paused) {
     let modal = document.getElementById("pause-modal");
     closeModal(modal);
@@ -290,8 +301,8 @@ function resume() {
     drawInterval = setInterval(draw, 1000 / x);
     playing = true;
     paused = false;
-  }
-  if (start) {
-    myMusic.play();
+    if (start) {
+      myMusic.play();
+    }
   }
 }
