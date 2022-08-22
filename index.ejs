@@ -12,7 +12,7 @@
 </head>
 <body>
     <script type="text/javascript"> document.addEventListener('click', function(e) { if(document.activeElement.toString() == '[object HTMLButtonElement]'){ document.activeElement.blur(); } }); </script>
-    <div class="btns">
+    <div class="header">
         <h2>Snake</h2>
         <button data-modal-target="#modal" id="instructions" class="button" type="button" style="position: absolute; left: 20px; top: 30px;">Instructions</button>
         <% if (typeof user == 'undefined' || user=='') { %>
@@ -97,11 +97,10 @@
 
     <div class="<%= error != '' || success_msg != '' || typeof signup != 'undefined' && signup == true || typeof login != 'undefined' && login == true ? 'active' : '' %>" id="overlay"></div>
 
-    <br>
 
-    <div style = "text-align:center;">
-        <canvas id="canvas" width="400" height="400"></canvas>
-        <div>
+    <div class="canvas" >
+        <canvas id="canvas" width="484" height="484"></canvas>
+        <div style = "display:flex; gap:100px; text-align:center; justify-content: center;width: 100%">
             <p id="score">Score: 0</p>
             <p id=maxScore>High Score: <%= typeof user != 'undefined' && user != '' ? user.score : 0 %></p>
             <button id="reset" class="button" type="button">Reset</button>

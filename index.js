@@ -2,6 +2,45 @@ var canvas, ctx, drawInterval, x, myMusic, overSound, chompSound, nopress;
 const overlay = document.getElementById("overlay");
 const openModalButtons = document.querySelectorAll("[data-modal-target]");
 const closeModalButtons = document.querySelectorAll("[data-close-button]");
+const appleImg = new Image();
+appleImg.src = "./public/apple.png";
+const rightSnakeImg = new Image();
+rightSnakeImg.src = "./public/rightSnake.png";
+const leftSnakeImg = new Image();
+leftSnakeImg.src = "./public/leftSnake.png";
+const upSnakeImg = new Image();
+upSnakeImg.src = "./public/upSnake.png";
+const downSnakeImg = new Image();
+downSnakeImg.src = "./public/downSnake.png";
+
+// game
+const gridSize = 22; // gridSize^2 canvas size
+var nextX = 0;
+var nextY = 0;
+const speed = 10;
+
+// snake variables
+var defaultTailSize = 3;
+var tailSize = defaultTailSize;
+var snakeX = (snakeY = gridSize / 2);
+const initialSnakeTrail = [
+  { x: snakeX - 2, y: snakeY },
+  { x: snakeX - 1, y: snakeY },
+  { x: snakeX, y: snakeY },
+];
+var snakeTrail = [...initialSnakeTrail];
+let value = document.getElementById("maxScore").textContent.split(" ");
+var points = Number.parseInt(value[value.length - 1]);
+
+// apple
+var appleX = snakeX + 5;
+var appleY = snakeY;
+
+var playing = true;
+var before = [0, 0];
+var paused = false;
+var over = false;
+var start = false;
 
 window.onload = function () {
   canvas = document.getElementById("canvas");
@@ -9,8 +48,7 @@ window.onload = function () {
   document.addEventListener("keydown", keyDownEvent);
   document.getElementById("reset").addEventListener("click", wipe);
   // render x times per second
-  x = 10;
-  drawInterval = setInterval(draw, 1000 / x);
+  drawInterval = setInterval(draw, 1000 / speed);
   openModalButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let modal = document.querySelector(button.dataset.modalTarget);
@@ -59,8 +97,10 @@ function closeModal(modal) {
     console.log("modal not found");
     return;
   }
-  modal.classList.remove("active");
-  overlay.classList.remove("active");
+  if (modal.classList.contains("active")) {
+    modal.classList.remove("active");
+    overlay.classList.remove("active");
+  }
 }
 
 function wipe() {
@@ -160,15 +200,38 @@ function draw() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  //orient snake head
+  var head;
+  if (nextY == 1) {
+    head = downSnakeImg;
+  } else if (nextY == -1) {
+    head = upSnakeImg;
+  } else if (nextX == -1) {
+    head = leftSnakeImg;
+  } else {
+    head = rightSnakeImg;
+  }
+
   // paint snake
   ctx.fillStyle = "green";
+  // paint snake green except for head
   for (let i = 0; i < snakeTrail.length; i++) {
-    ctx.fillRect(
-      snakeTrail[i].x * gridSize,
-      snakeTrail[i].y * gridSize,
-      gridSize,
-      gridSize
-    );
+    if (i == snakeTrail.length - 1) {
+      ctx.drawImage(
+        head,
+        snakeTrail[i].x * gridSize,
+        snakeTrail[i].y * gridSize,
+        gridSize,
+        gridSize
+      );
+    } else {
+      ctx.fillRect(
+        snakeTrail[i].x * gridSize,
+        snakeTrail[i].y * gridSize,
+        gridSize,
+        gridSize
+      );
+    }
     // bites tail
     if (
       snakeTrail[i].x == snakeX &&
@@ -178,10 +241,12 @@ function draw() {
       GameOver();
     }
   }
-  //set snake trail
-  snakeTrail.push({ x: snakeX, y: snakeY });
-  while (snakeTrail.length > tailSize) {
-    snakeTrail.shift();
+  if (start) {
+    //set snake trail
+    snakeTrail.push({ x: snakeX, y: snakeY });
+    while (snakeTrail.length > tailSize) {
+      snakeTrail.shift();
+    }
   }
 
   // bit apple
@@ -204,32 +269,18 @@ function draw() {
 
   // paint apple
   ctx.fillStyle = "red";
-  ctx.fillRect(appleX * gridSize, appleY * gridSize, gridSize, gridSize);
+  // ctx.fillRect(appleX * gridSize, appleY * gridSize, gridSize, gridSize);
+  ctx.drawImage(
+    appleImg,
+    appleX * gridSize,
+    appleY * gridSize,
+    gridSize,
+    gridSize
+  );
+
   let score = document.getElementById("score");
   score.textContent = `Score: ${tailSize - 3}`;
 }
-
-// snake variables
-var defaultTailSize = 3;
-var tailSize = defaultTailSize;
-var snakeTrail = [];
-var snakeX = 10;
-var snakeY = 10; // change this
-let value = document.getElementById("maxScore").textContent.split(" ");
-var points = Number.parseInt(value[value.length - 1]);
-
-// game
-var gridSize = 20; // 20 x 20 = 400 canvas size
-var nextX = 0;
-var nextY = 0;
-var appleX = 15;
-var appleY = 10;
-
-var playing = true;
-var before = [0, 0];
-var paused = false;
-var over = false;
-var start = false;
 
 function updateDB(s) {
   let profile = document.getElementById("profile");
@@ -273,10 +324,10 @@ function reset() {
   }
   tailSize = defaultTailSize;
   nextX = nextY = 0;
-  appleX = 15;
-  appleY = 10;
-  snakeX = snakeY = 10;
-  snakeTrail = [];
+  snakeX = snakeY = gridSize / 2;
+  appleX = snakeX + 5;
+  appleY = snakeY;
+  snakeTrail = [...initialSnakeTrail];
   paused = false;
   start = false;
 }
@@ -297,8 +348,7 @@ function resume() {
   if (paused) {
     let modal = document.getElementById("pause-modal");
     closeModal(modal);
-    x = 10;
-    drawInterval = setInterval(draw, 1000 / x);
+    drawInterval = setInterval(draw, 1000 / speed);
     playing = true;
     paused = false;
     if (start) {
